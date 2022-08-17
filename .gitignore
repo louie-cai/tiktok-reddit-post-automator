@@ -159,3 +159,5 @@ credentials/
 databases/
 productions/
 selenium/
+
+chromedriver
