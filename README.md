@@ -1,2 +1,3 @@
-# tiktok-reddit-post-automator
- tiktok-reddit-post-automator
+# Tiktok Automated Video Bot
+
+TODO
