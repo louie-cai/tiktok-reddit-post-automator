@@ -8,6 +8,7 @@ import logging
 import time
 
 if __name__ == '__main__':
+    # to make logging comments when we run the script
     logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s %(levelname)s] %(message)s')
     api_keys = file_utils.get_id_and_keys('credentials/reddit_api_keys.txt')
     database = 'databases/funny_videos.csv'

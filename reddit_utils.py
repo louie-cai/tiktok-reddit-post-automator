@@ -18,17 +18,22 @@ def update_new_posts(api_keys: tuple[str, str], subreddit: str | tuple[str, ...]
     logging.info(f'Connected to Reddit API')
     if isinstance(subreddit, tuple):
         subreddit = [f'{each}+' if i != len(subreddit) - 1 else each for i, each in enumerate(subreddit)]
+    # gets hottest videos of subreddit
     posts = reddit.subreddit(subreddit).hot(limit=limit)
     logging.info(f'Retrieved {limit} posts from {subreddit}')
+    # if dataframe of subreddit of videos doesn't exist then create new one. Else read in from existing dataframe
     database = pd.DataFrame(
         columns=['title', 'url', 'subreddit', 'score', 'created_utc', 'id', 'video', 'audio']) if not os.path.exists(
         database_path) else pd.read_csv(database_path)
     for post in posts:
+        # check if post already in database. If not, add to database
         if post.id not in database['id'].values and post.is_video:
             video_url = post.media['reddit_video']['fallback_url']
             database = database.append({
                 'title': post.title, 'url': post.url, 'subreddit': post.subreddit.display_name, 'score': post.score,
+                # unix time
                 'created_utc': post.created_utc, 'id': post.id, 'video': video_url,
+                # with video url, substitute part that matches 'DASH_\d+.mp4' with 'DASH_audio.mp4' for audio link
                 'audio': re.sub(r'DASH_\d+.mp4', 'DASH_audio.mp4', video_url)}, ignore_index=True)
             logging.info(f'Added {post.title} to database')
     database.to_csv(database_path, index=False)
